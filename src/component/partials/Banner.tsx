@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react"
 
 function Banner() {
-    const [bannerOpen, setBannerOpen] = useState(true);
+    const [bannerOpen, setBannerOpen] = useState(true)
 
     return (
         <>
@@ -32,7 +32,7 @@ function Banner() {
                 </div>
             )}
         </>
-    );
+    )
 }
 
-export default Banner;
+export default Banner

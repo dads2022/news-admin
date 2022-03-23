@@ -1,15 +1,19 @@
 import { useState, useRef, useEffect } from "react"
 import Transition from "../../modules/Transition"
 
-function EditMenu({ children, ...rest }) {
+type TEditMenu = {
+    children: any;
+}
+
+export default function EditMenu({ children, ...rest }: TEditMenu) {
     const [dropdownOpen, setDropdownOpen] = useState(false)
 
-    const trigger = useRef(null)
-    const dropdown = useRef(null)
+    const trigger: any = useRef(null)
+    const dropdown: any = useRef(null)
 
     // close on click outside
     useEffect(() => {
-        const clickHandler = ({ target }) => {
+        const clickHandler = ({ target }: any) => {
             if (
                 !dropdownOpen ||
                 dropdown.current.contains(target) ||
@@ -24,7 +28,7 @@ function EditMenu({ children, ...rest }) {
 
     // close if the esc key is pressed
     useEffect(() => {
-        const keyHandler = ({ keyCode }) => {
+        const keyHandler = ({ keyCode }: any) => {
             if (!dropdownOpen || keyCode !== 27) return
             setDropdownOpen(false)
         }
@@ -72,5 +76,3 @@ function EditMenu({ children, ...rest }) {
         </div>
     )
 }
-
-export default EditMenu

@@ -3,13 +3,18 @@ import { NavLink, useLocation } from "react-router-dom"
 
 import SidebarLinkGroup from "./SidebarLinkGroup"
 
-function Sidebar({ sidebarOpen, setSidebarOpen }) {
+interface ISidebar {
+    sidebarOpen: boolean;
+    setSidebarOpen: any
+}
+
+function Sidebar({ sidebarOpen, setSidebarOpen }: ISidebar) {
     const location = useLocation()
     const { pathname } = location
     console.log(pathname)
 
-    const trigger = useRef(null)
-    const sidebar = useRef(null)
+    const trigger: any = useRef(null)
+    const sidebar: any = useRef(null)
 
     const storedSidebarExpanded = localStorage.getItem("sidebar-expanded")
     const [sidebarExpanded, setSidebarExpanded] = useState(
@@ -18,7 +23,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
     // close on click outside
     useEffect(() => {
-        const clickHandler = ({ target }) => {
+        const clickHandler = ({ target }: any) => {
             if (!sidebar.current || !trigger.current) return
             if (!sidebarOpen || sidebar.current.contains(target) || trigger.current.contains(target)) return
             setSidebarOpen(false)
@@ -29,7 +34,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
     // close if the esc key is pressed
     useEffect(() => {
-        const keyHandler = ({ keyCode }) => {
+        const keyHandler = ({ keyCode }: any) => {
             if (!sidebarOpen || keyCode !== 27) return
             setSidebarOpen(false)
         }
@@ -38,11 +43,11 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
     })
 
     useEffect(() => {
-        localStorage.setItem("sidebar-expanded", sidebarExpanded)
+        localStorage.setItem("sidebar-expanded", sidebarExpanded as any)
         if (sidebarExpanded) {
-            document.querySelector("body").classList.add("sidebar-expanded")
+            document.body.classList.add("sidebar-expanded")
         } else {
-            document.querySelector("body").classList.remove("sidebar-expanded")
+            document.body.classList.remove("sidebar-expanded")
         }
     }, [sidebarExpanded])
 
@@ -147,7 +152,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                             </li>
 
                             <SidebarLinkGroup activecondition={pathname.includes("/content/")}>
-                                {(handleClick, open) => {
+                                {(handleClick: () => void, open: boolean) => {
                                     return (
                                         <React.Fragment>
                                             <a
@@ -575,7 +580,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
         </>
     )
 }
-function classNames(...classes) {
+function classNames(...classes: any[]) {
     return classes.filter(Boolean).join(' ')
 }
 
