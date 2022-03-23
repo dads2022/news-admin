@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 
-
 function ToggleDarkMode() {
     const currentTheme: string | null = localStorage.getItem("theme")
     const [theme, setTheme] = useState<string>(currentTheme as string)
@@ -13,12 +12,13 @@ function ToggleDarkMode() {
         localStorage.setItem("theme", theme as string)
     }, [colorTheme, theme])
 
-    return [colorTheme, setTheme]
+    return [colorTheme, setTheme] as const
 }
 
-export default function DarkModeButton(){
+
+export default function DarkModeButton() {
     const [colorTheme, setTheme] = ToggleDarkMode()
-    const [enabled, setEnabled] = useState(colorTheme === "dark" ? false : true)
+    const [enabled, setEnabled] = useState<boolean>(colorTheme === "dark" ? false : true)
     console.log(enabled)
     return (
         <div

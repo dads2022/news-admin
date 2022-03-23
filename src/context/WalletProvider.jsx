@@ -33,7 +33,6 @@ export function WalletProvider({ children }) {
             if (!ethereum) return alert("Wallet not connected")
             const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
             if (accounts.length) setCurrentAccount(accounts[0])
-            
         } catch (error) { console.log(error) }
     }
     const getTokenInfo = async currentAccount => {

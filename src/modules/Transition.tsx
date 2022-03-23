@@ -1,7 +1,10 @@
 import { useRef, useEffect, createContext, useContext } from "react"
 import { CSSTransition as ReactCSSTransition } from "react-transition-group"
 
-const TransitionContext = createContext({
+interface ITransitionContext {
+    parent: any
+}
+const TransitionContext = createContext<ITransitionContext>({
     parent: {},
 })
 
@@ -11,6 +14,23 @@ function useIsInitialRender() {
         isInitialRender.current = false
     }, [])
     return isInitialRender.current
+}
+
+interface ICssTransition {
+    children?: any
+    show?: any
+    appear?: any
+    unmountOnExit?: any
+    tag?: string
+    enter?: string
+    enterStart?: string
+    enterEnd?: string
+    leave?: string
+    leaveStart?: string
+    leaveEnd?: string
+    id?: string
+    className?: string
+    role?: string
 }
 
 function CSSTransition({
@@ -26,19 +46,7 @@ function CSSTransition({
     tag = "div",
     children,
     ...rest
-}: {
-    children: any
-    show: any
-    appear: any
-    unmountOnExit: any
-    tag: string
-    enter: string
-    enterStart: string
-    enterEnd: string
-    leave: string
-    leaveStart: string
-    leaveEnd: string
-}) {
+}: Partial<ICssTransition>) {
     const enterClasses = enter.split(" ").filter((s) => s.length)
     const enterStartClasses = enterStart.split(" ").filter((s) => s.length)
     const enterEndClasses = enterEnd.split(" ").filter((s) => s.length)
@@ -56,7 +64,7 @@ function CSSTransition({
     }
 
     const nodeRef: any = useRef(null)
-    const Component = tag
+    const Component: any = tag
 
     return (
         <ReactCSSTransition
@@ -97,15 +105,7 @@ function CSSTransition({
     )
 }
 
-export default function Transition({
-    show,
-    appear,
-    ...rest
-}: {
-    show: boolean
-    appear: any
-    rest: any
-}) {
+export default function Transition({ show, appear, ...rest }: Partial<ICssTransition>) {
     const { parent } = useContext(TransitionContext)
     const isInitialRender = useIsInitialRender()
     const isChild = show === undefined
@@ -113,15 +113,6 @@ export default function Transition({
     if (isChild) {
         return (
             <CSSTransition
-                children={undefined}
-                unmountOnExit={undefined}
-                tag={""}
-                enter={""}
-                enterStart={""}
-                enterEnd={""}
-                leave={""}
-                leaveStart={""}
-                leaveEnd={""}
                 appear={parent.appear || !parent.isInitialRender}
                 show={parent.show}
                 {...rest}
@@ -139,20 +130,7 @@ export default function Transition({
                 },
             }}
         >
-            <CSSTransition
-                children={undefined}
-                unmountOnExit={undefined}
-                tag={""}
-                enter={""}
-                enterStart={""}
-                enterEnd={""}
-                leave={""}
-                leaveStart={""}
-                leaveEnd={""}
-                appear={appear}
-                show={show}
-                {...rest}
-            />
+            <CSSTransition appear={appear} show={show} {...rest} />
         </TransitionContext.Provider>
     )
 }

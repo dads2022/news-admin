@@ -6,9 +6,9 @@ export const tailwindConfig = () => {
 }
 
 export const hexToRGB = (h: string) => {
-    let r = 0
-    let g = 0
-    let b = 0
+    let r: any = 0
+    let g: any = 0
+    let b: any = 0
     if (h.length === 4) {
         r = `0x${h[1]}${h[1]}`
         g = `0x${h[2]}${h[2]}`
@@ -21,7 +21,7 @@ export const hexToRGB = (h: string) => {
     return `${+r},${+g},${+b}`
 }
 
-export const formatValue = (value) =>
+export const formatValue = (value: number) =>
     Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",

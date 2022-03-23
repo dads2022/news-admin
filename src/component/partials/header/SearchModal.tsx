@@ -43,7 +43,6 @@ function SearchModal({ id, searchId, modalOpen, setModalOpen }: { id: string; se
                 leaveStart="opacity-100"
                 leaveEnd="opacity-0"
                 aria-hidden="true"
-                appear={undefined}
             />
             {/* Modal dialog */}
             <Transition

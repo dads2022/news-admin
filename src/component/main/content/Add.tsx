@@ -36,8 +36,8 @@ export default function Post() {
         watch,
         formState: { errors },
     } = useForm()
-    const typingContentRef = useRef(null)
-    const handlePostContent = (event, editor) => {
+    const typingContentRef = useRef<NodeJS.Timeout | null>(null)
+    const handlePostContent = (event: any, editor: any) => {
         const content = editor.getData()
         if (typingContentRef.current) {
             clearTimeout(typingContentRef.current)
@@ -46,12 +46,12 @@ export default function Post() {
             setValue("content", content)
         }, 300)
     }
-    const handleUploadThumb = (file) => {}
+    // const handleUploadThumb = (file: any) => {}
     useEffect(() => {
         // console.log(getValues())
     }, [watch()])
 
-    const handleSubmitAddPost = (data) => {
+    const handleSubmitAddPost = (data: any) => {
         console.log(data)
     }
     return (
@@ -168,10 +168,10 @@ export default function Post() {
                                 },
                             }}
                             editor={ClassicEditor}
-                            onReady={(editor) => {
+                            onReady={(editor: any) => {
                                 // You can store the "editor" and use when it is needed.
                                 console.log("Editor is ready to use!", editor)
-                                editor.editing.view.change((writer) => {
+                                editor.editing.view.change((writer: any) => {
                                     writer.setStyle(
                                         "height",
                                         "450px",
