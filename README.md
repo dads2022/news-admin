@@ -44,3 +44,18 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
 To learn React, check out the [React documentation](https://reactjs.org/).
+
+
+kieu du lieu
+
+- string : chuoi => 'ergergergr'
+- array : mang => ['boss', 'phu', 6]
+- boolean : true/false
+- object : doi tuong kieu du lieu JSON object
+const a = {
+    name: 'boss',
+    tuoi: 20,
+    nghe nghiep: boss
+}
+
+tuoi la a.name => 'boss'

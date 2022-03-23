@@ -1,26 +1,29 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { lazy, useEffect } from "react"
+import { Routes, Route, useLocation } from "react-router-dom"
+import "./App.scss"
+import "./modules/ChartjsConfig"
+import { WalletProvider } from "./context/WalletProvider"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// Import pages
+const SignIn = lazy(() => import("./component/auth/SignIn"))
+const Layout = lazy(() => import("./component/Layout"))
+
+
+export default function App() {
+    const location = useLocation();
+    const html = document.querySelector("html") as HTMLElement
+    useEffect(() => {
+        html.style.scrollBehavior = "auto";
+        window.scroll({ top: 0 });
+        html.style.scrollBehavior = "";
+    }, [location.pathname]); // triggered on route change
+
+    return (
+        <WalletProvider>
+            <Routes>
+                <Route path="/auth/signin" element={<SignIn />} />
+                <Route path="/*" element={<Layout />} />
+            </Routes>
+        </WalletProvider>
+    );
 }
-
-export default App;
