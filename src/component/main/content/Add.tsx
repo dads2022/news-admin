@@ -162,7 +162,7 @@ export default function Post() {
                                 })}
                                 type="text"
                                 placeholder="Add title..."
-                                className="bg-white dark:bg-slate-600 border-1 border-gray-300 placeholder-gray-300 text-sm rounded focus:ring-slate-200 block w-full p-2.5 dark:border-gray-400"
+                                className="bg-white dark:bg-slate-600 border-none border-gray-300 placeholder-gray-300 text-sm rounded focus:ring-slate-200 block w-full p-2.5 dark:border-gray-400"
                             />
                         </div>
                     </div>
