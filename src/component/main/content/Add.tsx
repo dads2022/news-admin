@@ -5,6 +5,8 @@ import { CKEditor } from "@ckeditor/ckeditor5-react"
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
 
 import { useForm } from "react-hook-form"
+import ImageUploader from "../../../modules/ImageUploader"
+import axios from "axios"
 
 const people = [
     { id: 1, name: "Wade Cooper" },
@@ -37,7 +39,7 @@ export default function Post() {
         formState: { errors },
     } = useForm()
     const typingContentRef = useRef<NodeJS.Timeout | null>(null)
-    const handlePostContent = (event: any, editor: any) => {
+    const handlePostContent = (e: any, editor: any) => {
         const content = editor.getData()
         if (typingContentRef.current) {
             clearTimeout(typingContentRef.current)
@@ -46,13 +48,22 @@ export default function Post() {
             setValue("content", content)
         }, 300)
     }
-    // const handleUploadThumb = (file: any) => {}
-    useEffect(() => {
-        // console.log(getValues())
-    }, [watch()])
 
-    const handleSubmitAddPost = (data: any) => {
-        console.log(data)
+    const handleSubmitThumb = () => {
+        console.log(123)
+    }
+    const [thumb, setThumb] = useState({})
+
+    const handleSubmitAddPost = async (data: any) => {
+        console.log(thumb)
+        const formData = new FormData()
+        formData.append("data", JSON.stringify(data))
+        formData.append("thumb", thumb as any)
+        const res = await axios.post("/", formData, {
+            headers: {
+                "Content-type": "multipart/form-data",
+            },
+        })
     }
     return (
         <form onSubmit={handleSubmit(handleSubmitAddPost)}>
@@ -62,7 +73,7 @@ export default function Post() {
                     <div className="w-full">
                         <Listbox value={selected} onChange={setSelected}>
                             <div className="relative">
-                                <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
+                                <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white dark:bg-slate-600 rounded shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
                                     <span className="block truncate">{selected.name}</span>
                                     <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                                         <SelectorIcon
@@ -77,17 +88,16 @@ export default function Post() {
                                     leaveFrom="opacity-100"
                                     leaveTo="opacity-0"
                                 >
-                                    <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-10">
+                                    <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto bg-white dark:bg-slate-600 rounded shadow-md max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-10">
                                         {people.map((person, personIdx) => (
                                             <Listbox.Option
                                                 key={personIdx}
                                                 className={({ active }) =>
                                                     `cursor-default select-none relative py-2 pl-10 pr-4 ${
-                                                        active
-                                                            ? "text-amber-900 bg-amber-100"
-                                                            : "text-gray-900"
+                                                        active && "text-amber-900 bg-amber-100"
                                                     }`
                                                 }
+                                                {...register("category", { value: person.id })}
                                                 value={person}
                                             >
                                                 {({ selected }) => (
@@ -95,20 +105,20 @@ export default function Post() {
                                                         <span
                                                             className={`block truncate ${
                                                                 selected
-                                                                    ? "font-medium"
+                                                                    ? "font-bold"
                                                                     : "font-normal"
                                                             }`}
                                                         >
                                                             {person.name}
                                                         </span>
-                                                        {selected ? (
+                                                        {selected && (
                                                             <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
                                                                 <CheckIcon
                                                                     className="w-5 h-5"
                                                                     aria-hidden="true"
                                                                 />
                                                             </span>
-                                                        ) : null}
+                                                        )}
                                                     </>
                                                 )}
                                             </Listbox.Option>
@@ -152,7 +162,7 @@ export default function Post() {
                                 })}
                                 type="text"
                                 placeholder="Add title..."
-                                className="bg-gray-50 border-1 border-gray-300 placeholder-gray-300 text-sm rounded focus:ring-gray-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-400"
+                                className="bg-white dark:bg-slate-600 border-1 border-gray-300 placeholder-gray-300 text-sm rounded focus:ring-slate-200 block w-full p-2.5 dark:border-gray-400"
                             />
                         </div>
                     </div>
@@ -161,6 +171,7 @@ export default function Post() {
                             Content
                         </label>
                         <CKEditor
+                            className="bg-white dark:bg-black"
                             config={{
                                 ckfinder: {
                                     openMethod: "popup",
@@ -182,54 +193,21 @@ export default function Post() {
                             onChange={handlePostContent}
                         />
                     </div>
-                    <div className="w-full">
+                    <div className="w-full space-y-2">
                         <label className="block text-gray-500 dark:text-gray-200 mb-3 md:mb-0 pr-4">
                             Thumbnail
                         </label>
-                        <div className="w-full inline-flex items-center">
-                            <div className="w-1/4 shadow-xl bg-gray-50">
-                                <div className="flex items-center justify-center">
-                                    <label className="flex flex-col w-full h-24 border-4 border-indigo-200 border-dashed hover:bg-gray-100 hover:border-gray-300">
-                                        <div className="flex flex-col items-center justify-center p-4">
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="w-8 h-8 text-gray-400 group-hover:text-gray-600"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                stroke="currentColor"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth="2"
-                                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                                                />
-                                            </svg>
-                                            <p className="pt-1 text-sm tracking-wider text-gray-400 group-hover:text-gray-600">
-                                                Attach a file
-                                            </p>
-                                        </div>
-                                        <input
-                                            onChange={() => console.log("change file")}
-                                            type="file"
-                                            className="opacity-0"
-                                        />
-                                    </label>
-                                </div>
+                        <div className="flex items-center">
+                            <div className="w-60 bg-white dark:bg-slate-600">
+                                <ImageUploader setThumb={setThumb} />
                             </div>
-                            <div>IMG</div>
                         </div>
-                        <div>
-                            <img src="" alt="" />
-                        </div>
-                    </div>
-                    <div className="flex items-center justify-center">
-                        <button className="px-4 py-2 rounded bg-indigo-500 text-white">
-                            SUBMIT
-                        </button>
                     </div>
                 </div>
             </section>
+            <div className="mt-10">
+                <button className="px-4 py-2 rounded bg-indigo-500 text-white">SUBMIT</button>
+            </div>
         </form>
     )
 }

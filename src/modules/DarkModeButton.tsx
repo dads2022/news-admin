@@ -19,7 +19,7 @@ function ToggleDarkMode() {
 export default function DarkModeButton() {
     const [colorTheme, setTheme] = ToggleDarkMode()
     const [enabled, setEnabled] = useState<boolean>(colorTheme === "dark" ? false : true)
-    console.log(enabled)
+
     return (
         <div
             onClick={() => {
@@ -29,7 +29,7 @@ export default function DarkModeButton() {
             className="cursor-pointer inline-flex items-center"
         >
             <svg
-                className={classNames(enabled ? "text-gray-300" : "text-yellow-800")}
+                className={classNames(enabled ? "text-slate-600" : "text-yellow-600")}
                 width="24"
                 viewBox="0 0 24 24"
                 strokeWidth="2"
@@ -43,7 +43,7 @@ export default function DarkModeButton() {
             </svg>
             <span className={classNames(enabled && "text-gray-600", "mx-2")}>/</span>
             <svg
-                className={enabled ? "text-black" : "text-gray-300"}
+                className={enabled ? "text-slate-200" : "text-gray-300"}
                 width="24"
                 fill="none"
                 viewBox="0 0 24 24"

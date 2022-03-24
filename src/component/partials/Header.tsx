@@ -8,17 +8,17 @@ import DarkModeButton from "../../modules/DarkModeButton"
 
 type THeader = {
     sidebarOpen: boolean
-    setSidebarOpen: () => void
+    setSidebarOpen: any
 }
 
 export default function Header({ sidebarOpen, setSidebarOpen }: THeader) {
     const [searchModalOpen, setSearchModalOpen] = useState(false)
     return (
-        <header className="sticky top-0 bg-white border-b border-slate-200 z-30">
+        <header className="sticky top-0 bg-white dark:bg-slate-700 border-b border-slate-200 dark:border-slate-600 z-30">
             <div className="px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16 -mb-px">
                     {/* Header: Left side */}
-                    <div className="inline-flex">
+                    <div className="md:inline-flex hidden">
                         <Wallet />
                     </div>
                     {/* Header: Right side */}
