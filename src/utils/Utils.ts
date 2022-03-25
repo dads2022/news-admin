@@ -2,10 +2,10 @@ import resolveConfig from "tailwindcss/resolveConfig"
 
 export const tailwindConfig = () => {
     // Tailwind config
-    return resolveConfig("./src/css/tailwind.config.js")
+    return resolveConfig("../../tailwind.config.js")
 }
 
-export const hexToRGB = (h: string) => {
+export const hexToRGB = (h: any) => {
     let r: any = 0
     let g: any = 0
     let b: any = 0
