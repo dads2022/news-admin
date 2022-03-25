@@ -17,7 +17,7 @@ export default function Datepicker() {
         onChange: (selectedDates: string, dateStr: string, instance: any) => {
             instance.element.value = dateStr.replace("to", "-")
         },
-    }
+    } as any
 
     return (
         <div className="relative inline-flex items-center">
