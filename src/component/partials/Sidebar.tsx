@@ -11,7 +11,6 @@ interface ISidebar {
 function Sidebar({ sidebarOpen, setSidebarOpen }: ISidebar) {
     const location = useLocation()
     const { pathname } = location
-    console.log(pathname)
 
     const trigger: any = useRef(null)
     const sidebar: any = useRef(null)

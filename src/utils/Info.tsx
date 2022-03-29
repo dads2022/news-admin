@@ -1,7 +1,15 @@
 import { useState } from "react"
 import Transition from "../modules/Transition"
 
-export default function Info({ children, className, containerClassName }: {children: Element; className: string; containerClassName: string}) {
+export default function Info({
+    children,
+    className,
+    containerClassName,
+}: {
+    children: Element
+    className: string
+    containerClassName: string
+}) {
     const [infoOpen, setInfoOpen] = useState(false)
 
     return (

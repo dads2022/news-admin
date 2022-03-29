@@ -172,12 +172,12 @@ export default function Post() {
                         </label>
                         <CKEditor
                             className="bg-white dark:bg-black"
-                            config={{
-                                ckfinder: {
-                                    openMethod: "popup",
-                                    uploadUrl: "https://app.gome.io",
-                                },
-                            }}
+                            // config={{
+                            //     ckfinder: {
+                            //         openMethod: "popup",
+                            //         uploadUrl: "https://app.gome.io",
+                            //     },
+                            // }}
                             editor={ClassicEditor}
                             onReady={(editor: any) => {
                                 // You can store the "editor" and use when it is needed.

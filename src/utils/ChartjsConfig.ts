@@ -1,20 +1,22 @@
 // Import Chart.js
 import { Chart, Tooltip } from "chart.js"
 // Import Tailwind config
-import { tailwindConfig } from "../utils/Utils"
+import { tailwindConfig } from "./Utils"
 
 Chart.register(Tooltip)
+
+const tw: any = tailwindConfig()
 
 // Define Chart.js default settings
 Chart.defaults.font.family = '"Inter", sans-serif'
 Chart.defaults.font.weight = "500"
-Chart.defaults.color = tailwindConfig().theme.colors.slate[400]
-Chart.defaults.scale.grid.color = tailwindConfig().theme.colors.slate[100]
-Chart.defaults.plugins.tooltip.titleColor = tailwindConfig().theme.colors.slate[800]
-Chart.defaults.plugins.tooltip.bodyColor = tailwindConfig().theme.colors.slate[800]
-Chart.defaults.plugins.tooltip.backgroundColor = tailwindConfig().theme.colors.white
+Chart.defaults.color = tw.theme.colors?.slate[400]
+Chart.defaults.scale.grid.color = tw.theme?.colors?.slate[100]
+Chart.defaults.plugins.tooltip.titleColor = tw.theme.colors?.slate[800]
+Chart.defaults.plugins.tooltip.bodyColor = tw.theme.colors?.slate[800]
+Chart.defaults.plugins.tooltip.backgroundColor = tw.theme.colors?.white
 Chart.defaults.plugins.tooltip.borderWidth = 1
-Chart.defaults.plugins.tooltip.borderColor = tailwindConfig().theme.colors.slate[200]
+Chart.defaults.plugins.tooltip.borderColor = tw.theme.colors?.slate[200]
 Chart.defaults.plugins.tooltip.displayColors = false
 Chart.defaults.plugins.tooltip.mode = "nearest"
 Chart.defaults.plugins.tooltip.intersect = false
