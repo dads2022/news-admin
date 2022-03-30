@@ -79,7 +79,7 @@ export const AuthContextProvider = ({ children }: any) => {
     // signIn
     const signIn = async (data: any) => {
         try {
-            const res = await axios.post(`${window.dads.REACT_APP_API}/auth/login`, data)
+            const res = await axios.post(`${window.dads.REACT_APP_API}/auth/signin`, data)
             const result = await res.data
             localStorage.setItem("accessToken", result.accessToken)
             toastPushNotification(result.message, 'success')

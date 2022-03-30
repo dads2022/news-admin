@@ -7,6 +7,7 @@ import { AuthContextProvider } from "./context/AuthProdiver"
 // import ProtectedRoute from "./modules/ProtectedRoute"
 
 // Import pages
+const SignUp = lazy(() => import("./component/auth/SignUp"))
 const SignIn = lazy(() => import("./component/auth/SignIn"))
 const ProtectedRoute = lazy(() => import("./modules/ProtectedRoute"))
 const Layout = lazy(() => import("./component/Layout"))
@@ -24,6 +25,7 @@ export default function App() {
         <AuthContextProvider>
             <WalletProvider>
                 <Routes>
+                    <Route path="/auth/signup" element={<SignUp />} />
                     <Route path="/auth/signin" element={<SignIn />} />
                     <Route
                         path="/*"

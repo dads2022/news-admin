@@ -11,7 +11,7 @@ declare const window: Window & typeof globalThis & {
 
 window.dads= {
     BASE_URL: "http://localhost:3000",
-    REACT_APP_API: "http://localhost:3001",
+    REACT_APP_API: "http://localhost:6969",
 }
 
 ReactDOM.render(
