@@ -1,14 +1,17 @@
-import { Link } from "react-router-dom"
+import { Link, Navigate, useNavigate, useLocation } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import useAuth from "../../context/AuthProdiver"
 import Loading from "../../modules/SkeletonLoading"
 import DarkModeButton from "../../modules/DarkModeButton"
 
 export default function SignIn() {
+    const { state }: any = useLocation()
+    const navigate = useNavigate()
     const {
         signIn,
         authContextValue: { authState },
     } = useAuth()
+
     const {
         handleSubmit,
         register,
@@ -17,12 +20,13 @@ export default function SignIn() {
     const submitLogin = async (data: any) => {
         try {
             await signIn(data)
+            navigate("/")
         } catch (e) {
             console.log(e)
         }
     }
 
-    // if (authState.isAuth) return <Navigate to={"from"} />
+    if (authState.isAuth) return <Navigate to={state ? state.previousPage : "/"} replace={true} />
     return authState.isLoading ? (
         <Loading />
     ) : (

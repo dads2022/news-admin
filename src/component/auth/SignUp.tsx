@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom"
+import { Link, Navigate, useNavigate } from "react-router-dom"
 import { useForm } from "react-hook-form"
 import useAuth from "../../context/AuthProdiver"
 import DarkModeButton from "../../modules/DarkModeButton"
@@ -18,11 +18,12 @@ export default function SignUp() {
     const submitSignUp = async (data: any) => {
         try {
             await signUp(data)
-            // navigate("/auth/login")
+            navigate("/auth/signin")
         } catch (e) {
             console.log(e)
         }
     }
+    if (authState.isAuth) navigate(-1)
     return (
         <section className="min-h-screen flex items-stretch">
             <section className="lg:flex w-1/2 hidden bg-no-repeat bg-cover relative items-center">
@@ -79,7 +80,7 @@ export default function SignUp() {
                     <p className="my-3 text-center">
                         Register to continue or{" "}
                         <span className="underline text-center text-blue-500">
-                            <Link to="/auth/login">Login now</Link>
+                            <Link to="/auth/signin">Login now</Link>
                         </span>
                     </p>
                     <form

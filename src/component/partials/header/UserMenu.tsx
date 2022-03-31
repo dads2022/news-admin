@@ -1,8 +1,14 @@
 import { useState, useRef, useEffect } from "react"
 import { Link } from "react-router-dom"
+import useAuth from "../../../context/AuthProdiver"
 import Transition from "../../../modules/Transition"
 
 function UserMenu() {
+    const {
+        authContextValue: {
+            authState: { user },
+        },
+    } = useAuth()
     const [dropdownOpen, setDropdownOpen] = useState(false)
 
     const trigger: any = useRef(null)
@@ -79,8 +85,8 @@ function UserMenu() {
                     onBlur={() => setDropdownOpen(false)}
                 >
                     <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-slate-200">
-                        <div className="font-medium text-slate-800">ZUNO</div>
-                        <div className="text-xs text-slate-500 italic">Handsome Administrator</div>
+                        <div className="font-medium text-slate-800">{user.name}</div>
+                        <div className="text-xs text-slate-500 italic">{user.role}</div>
                     </div>
                     <ul>
                         <li>

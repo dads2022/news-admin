@@ -1,7 +1,7 @@
-import { createContext, useEffect, useReducer, useContext, useMemo, useRef, ErrorInfo } from "react"
+import { createContext, useEffect, useReducer, useContext, useMemo, useRef } from "react"
 import { authReducer } from "../reducer/AuthReducer"
 import axios from "axios"
-import { toastPushNotification } from '../utils/Helper'
+import { toastPushNotification } from "../utils/Helper"
 
 const initAuthState = {
     isLoading: true,
@@ -16,13 +16,13 @@ export const headerWithAuth = () => {
 }
 
 interface IAuthContext {
-    signIn: any
-    signUp: any
-    logIn: any
-    logOut: any
-    verifyAccount: any
-    ForgotPassword: any
-    authContextValue: any
+    getUser?: any
+    signIn?: any
+    signUp?: any
+    signOut?: any
+    verifyAccount?: any
+    ForgotPassword?: any
+    authContextValue?: any
 }
 
 export const AuthContext = createContext<Partial<IAuthContext>>({})
@@ -69,10 +69,10 @@ export const AuthContextProvider = ({ children }: any) => {
         try {
             const res = await axios.post(`${window.dads.REACT_APP_API}/auth/signup`, data)
             const result = await res.data
-            toastPushNotification(result.message, 'success')
+            toastPushNotification(result.message, "success")
         } catch (e: any) {
-            const err = e.response ? e.response.data : 'Bad request'
-            toastPushNotification(err.message || err, 'error')
+            const err = e.response ? e.response.data : "Bad request"
+            toastPushNotification(err.message || err, "error")
         }
     }
 
@@ -82,23 +82,23 @@ export const AuthContextProvider = ({ children }: any) => {
             const res = await axios.post(`${window.dads.REACT_APP_API}/auth/signin`, data)
             const result = await res.data
             localStorage.setItem("accessToken", result.accessToken)
-            toastPushNotification(result.message, 'success')
+            toastPushNotification(result.message, "success")
             await getUser()
         } catch (e: any) {
-            const err = e.response ? e.response.data : 'Bad request'
-            toastPushNotification(err.message || err, 'error')
+            const err = e.response ? e.response.data : "Bad request"
+            toastPushNotification(err.message || err, "error")
         }
     }
 
-    // logOut
-    const logOut = async () => {
+    // signOut
+    const signOut = async () => {
         headerWithAuth()
         try {
-            const res = await axios.post(`${window.dads.REACT_APP_API}/auth/logout`, {
+            const res = await axios.post(`${window.dads.REACT_APP_API}/auth/signout`, {
                 token: localStorage.getItem("accessToken"),
             })
             const result = await res.data
-            toastPushNotification(result.message, 'success')
+            toastPushNotification(result.message, "success")
             localStorage.removeItem("accessToken")
             authDispatch({
                 type: "SET_AUTH",
@@ -107,8 +107,8 @@ export const AuthContextProvider = ({ children }: any) => {
                 user: null,
             })
         } catch (e: any) {
-            const err = e.response ? e.response.data : 'Bad request'
-            toastPushNotification(err.message || err, 'error')
+            const err = e.response ? e.response.data : "Bad request"
+            toastPushNotification(err.message || err, "error")
         }
     }
 
@@ -120,11 +120,11 @@ export const AuthContextProvider = ({ children }: any) => {
             })
             const result = await res.data
             localStorage.setItem("accessToken", result.accessToken)
-            toastPushNotification(result.message, 'success')
+            toastPushNotification(result.message, "success")
             await getUser()
         } catch (e: any) {
-            const err = e.response ? e.response.data : 'Bad request'
-            toastPushNotification(err.message || err, 'error')
+            const err = e.response ? e.response.data : "Bad request"
+            toastPushNotification(err.message || err, "error")
         }
     }
 
@@ -133,10 +133,10 @@ export const AuthContextProvider = ({ children }: any) => {
         try {
             const res = await axios.post(`${window.dads.REACT_APP_API}/auth/forgot-password`, data)
             const result = await res.data
-            toastPushNotification(result.message, 'success')
+            toastPushNotification(result.message, "success")
         } catch (e: any) {
             const err = e.response ? e.response.data : "Bad request"
-            toastPushNotification(err.message || err, 'error')
+            toastPushNotification(err.message || err, "error")
         }
     }
 
@@ -144,7 +144,7 @@ export const AuthContextProvider = ({ children }: any) => {
         return { authState, authDispatch }
     }, [authState, authDispatch])
 
-    const authValue = { signUp, signIn, logOut, verifyAccount, ForgotPassword, authContextValue }
+    const authValue = { signUp, signIn, signOut, verifyAccount, ForgotPassword, authContextValue }
 
     return <AuthContext.Provider value={authValue}>{children}</AuthContext.Provider>
 }
