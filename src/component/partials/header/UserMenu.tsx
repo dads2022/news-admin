@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from "react"
 import { Link } from "react-router-dom"
-import useAuth from "../../../context/AuthProdiver"
 import Transition from "../../../modules/Transition"
+import useAuth from "../../../context/AuthProdiver"
 
 function UserMenu() {
     const {
+        signOut,
         authContextValue: {
             authState: { user },
         },
@@ -39,6 +40,13 @@ function UserMenu() {
         return () => document.removeEventListener("keydown", keyHandler)
     })
 
+    const handleSignOut = () => {
+        try {
+            signOut()
+        } catch (e) {
+            console.log(e)
+        }
+    }
     return (
         <div className="relative inline-flex">
             <button
@@ -85,8 +93,8 @@ function UserMenu() {
                     onBlur={() => setDropdownOpen(false)}
                 >
                     <div className="pt-0.5 pb-2 px-3 mb-1 border-b border-slate-200">
-                        <div className="font-medium text-slate-800">{user.name}</div>
-                        <div className="text-xs text-slate-500 italic">{user.role}</div>
+                        <div className="font-medium text-slate-800">{user?.name}</div>
+                        <div className="text-xs text-slate-500 italic">{user?.role}</div>
                     </div>
                     <ul>
                         <li>
@@ -98,14 +106,11 @@ function UserMenu() {
                                 Settings
                             </Link>
                         </li>
-                        <li>
-                            <Link
-                                className="font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
-                                to="/"
-                                onClick={() => setDropdownOpen(!dropdownOpen)}
-                            >
-                                Sign Out
-                            </Link>
+                        <li
+                            className="cursor-pointer font-medium text-sm text-indigo-500 hover:text-indigo-600 flex items-center py-1 px-3"
+                            onClick={handleSignOut}
+                        >
+                            Sign Out
                         </li>
                     </ul>
                 </div>

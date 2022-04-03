@@ -36,7 +36,17 @@ export const AuthContextProvider = ({ children }: any) => {
         try {
             const res = await axios.get(`${window.dads.REACT_APP_API}/user/info`)
             const result = await res.data
-            authDispatch({
+            if (!result.success) {
+                localStorage.removeItem("accessToken")
+                toastPushNotification("Your session login is expired. Please re-login!", "error")
+                return authDispatch({
+                    type: "SET_AUTH",
+                    isLoading: false,
+                    isAuth: false,
+                    user: null,
+                })
+            }
+            return authDispatch({
                 type: "SET_AUTH",
                 isLoading: false,
                 isAuth: true,
@@ -55,14 +65,13 @@ export const AuthContextProvider = ({ children }: any) => {
 
     // Check user keep logined on browser
     const interval: any = useRef(null)
-
     useEffect(() => {
         getUser()
-        interval.current = setInterval(() => {
-            getUser()
-        }, 30 * 60 * 1000)
-        return () => clearInterval(interval.current)
-    }, [])
+        // interval.current = setInterval(() => {
+        //     getUser()
+        // }, 30 * 60 * 1000)
+        // return () => clearInterval(interval.current)
+    }, [authState.isAuth])
 
     // sign up
     const signUp = async (data: any) => {
@@ -83,7 +92,7 @@ export const AuthContextProvider = ({ children }: any) => {
             const result = await res.data
             localStorage.setItem("accessToken", result.accessToken)
             toastPushNotification(result.message, "success")
-            await getUser()
+            getUser()
         } catch (e: any) {
             const err = e.response ? e.response.data : "Bad request"
             toastPushNotification(err.message || err, "error")
@@ -92,11 +101,8 @@ export const AuthContextProvider = ({ children }: any) => {
 
     // signOut
     const signOut = async () => {
-        headerWithAuth()
         try {
-            const res = await axios.post(`${window.dads.REACT_APP_API}/auth/signout`, {
-                token: localStorage.getItem("accessToken"),
-            })
+            const res = await axios.get(`${window.dads.REACT_APP_API}/auth/signout`)
             const result = await res.data
             toastPushNotification(result.message, "success")
             localStorage.removeItem("accessToken")

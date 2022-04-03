@@ -4,7 +4,8 @@ import "./App.scss"
 import "./utils/ChartjsConfig"
 import { WalletProvider } from "./context/WalletProvider"
 import { AuthContextProvider } from "./context/AuthProdiver"
-// import ProtectedRoute from "./modules/ProtectedRoute"
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 // Import pages
 const SignUp = lazy(() => import("./component/auth/SignUp"))
@@ -37,6 +38,7 @@ export default function App() {
                     />
                 </Routes>
             </WalletProvider>
+            <ToastContainer />
         </AuthContextProvider>
     )
 }

@@ -10,8 +10,8 @@ declare const window: Window & typeof globalThis & {
 }
 
 window.dads = {
-    BASE_URL: process.env.NODE_ENV ? "https://news-admin.dadsnetwork.net" : "http://localhost:3000",
-    REACT_APP_API: process.env.NODE_ENV ? "https://news-api.dadsnetwork.net" : "http://localhost:6969",
+    BASE_URL: process.env.NODE_ENV === "production" ? "https://news-admin.dadsnetwork.net" : "http://localhost:3000",
+    REACT_APP_API: process.env.NODE_ENV === "production" ? "https://news-api.dadsnetwork.net" : "http://localhost:6969",
 }
 
 ReactDOM.render(

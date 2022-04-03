@@ -1,16 +1,20 @@
 import { toast } from "react-toastify"
 
-export const toastPushNotification = (message: string, type: any, theme = "dark" || "light") => {
-    const options = {
+export const toastPushNotification = (message: string, type: any, theme = localStorage.getItem("theme")) => {
+    const options: any = {
         type,
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 2000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: false,
         draggable: true,
         progress: undefined,
         theme,
-    } as any
+    }
     return toast(message, options)
 }
+
+// export const getRefreshToken = async () => {
+
+// }
