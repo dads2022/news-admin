@@ -25,8 +25,7 @@ export function WalletProvider({ children }: any) {
     const [tokenInfo, setTokenInfo] = useState({})
     const checkWalletConnected = async () => {
         try {
-            if (!ethereum)
-                return console.log("You need to install Crypto Wallets to use our features!")
+            if (!ethereum) return console.log("You need to install Crypto Wallets to use our features!")
             const accounts = await ethereum.request({ method: "eth_accounts" })
             if (!accounts.length) return console.log("Wallet is not connected!")
             setCurrentAccount(accounts[0])

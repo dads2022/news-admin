@@ -91,6 +91,7 @@ export const AuthContextProvider = ({ children }: any) => {
             const res = await axios.post(`${window.dads.REACT_APP_API}/auth/signin`, data)
             const result = await res.data
             localStorage.setItem("accessToken", result.accessToken)
+            document.cookie = `refreshToken=${result.refreshToken}; max-age=${7*3600*24}; path=/`
             toastPushNotification(result.message, "success")
             getUser()
         } catch (e: any) {

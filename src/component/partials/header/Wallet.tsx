@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
 import useWallet from "../../../context/WalletProvider"
 import { CopyToClipboard } from "react-copy-to-clipboard"
-import Transition from "../../../modules/Transition"
 
 export default function Wallet() {
     const { currentAccount, connectWallet, tokenInfo } = useWallet()

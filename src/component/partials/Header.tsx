@@ -3,7 +3,7 @@ import SearchModal from "./header/SearchModal"
 import Notifications from "./header/Notifications"
 import Help from "./header/Help"
 import UserMenu from "./header/UserMenu"
-import Wallet from "./header/Wallet"
+// import Wallet from "./header/Wallet"
 import DarkModeButton from "../../modules/DarkModeButton"
 
 type THeader = {
@@ -18,8 +18,9 @@ export default function Header({ sidebarOpen, setSidebarOpen }: THeader) {
             <div className="px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16 -mb-px">
                     {/* Header: Left side */}
-                    <div className="md:inline-flex hidden">
-                        <Wallet />
+                    <div className="md:inline-flex">
+                        {/* <Wallet /> */}
+                        <DarkModeButton />
                     </div>
                     {/* Header: Right side */}
                     <div className="inline-flex">
@@ -57,8 +58,6 @@ export default function Header({ sidebarOpen, setSidebarOpen }: THeader) {
                         />
                         <Notifications />
                         <Help />
-                        <hr className="w-px h-6 bg-slate-200 mx-3" />
-                        <DarkModeButton />
                         <hr className="w-px h-6 bg-slate-200 mx-3" />
                         <UserMenu />
                     </div>

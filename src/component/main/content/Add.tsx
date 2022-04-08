@@ -1,5 +1,5 @@
 import { Fragment, useState, useRef, useEffect } from "react"
-import { Listbox, Transition } from "@headlessui/react"
+import { Combobox, Dialog, Transition } from "@headlessui/react"
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid"
 import { CKEditor } from "@ckeditor/ckeditor5-react"
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
@@ -7,40 +7,65 @@ import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
 import { useForm } from "react-hook-form"
 import ImageUploader from "../../../modules/ImageUploader"
 import axios from "axios"
-
-const people = [
-    { id: 1, name: "Wade Cooper" },
-    { id: 2, name: "Arlene Mccoy" },
-    { id: 3, name: "Devon Webb" },
-    { id: 4, name: "Tom Cook" },
-    { id: 5, name: "Tanya Fox" },
-    { id: 6, name: "Hellen Schmidt" },
-]
+import { toastPushNotification } from "../../../utils/Helper"
 
 export default function Post() {
-    const [selected, setSelected] = useState(people[0])
+    const [categoriesList, setCategoriesList]: [any, any] = useState([])
+    const [selectedCategory, setSelectedCategory]: [any, any] = useState({})
     const [query, setQuery] = useState("")
-
-    const filteredPeople =
+    const filteredCategory =
         query === ""
-            ? people
-            : people.filter((person) =>
-                  person.name
+            ? categoriesList
+            : categoriesList.filter((item: any) =>
+                  item.title
                       .toLowerCase()
                       .replace(/\s+/g, "")
                       .includes(query.toLowerCase().replace(/\s+/g, ""))
               )
+    const getCategories = async () => {
+        try {
+            const res = await axios.get(`${window.dads.REACT_APP_API}/content/category`)
+            const result = await res.data
+            setCategoriesList(result.data)
+            setSelectedCategory(result.data[0])
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        getCategories()
+    }, [])
+    const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false)
+    const {
+        handleSubmit: handleSubmit2,
+        reset: reset2,
+        register: register2,
+        formState: { errors: errors2, isSubmitting: isSubmitting2 },
+    } = useForm() // add category
+    const handleSubmitAddCategory = async (data: any) => {
+        try {
+            const res = await axios.post(`${window.dads.REACT_APP_API}/content/category`, data)
+            const result = await res.data
+            toastPushNotification(result.message, "success")
+            getCategories()
+            setIsOpenCategoryModal(false)
+            reset2()
+        } catch (error) {
+            console.log(error)
+        }
+    }
     const {
         register,
+        reset,
         handleSubmit,
         setValue,
         getValues,
-        watch,
-        formState: { errors },
-    } = useForm()
+        formState: { errors, isSubmitting },
+    } = useForm() // add post
+
     const typingContentRef = useRef<NodeJS.Timeout | null>(null)
-    const handlePostContent = (e: any, editor: any) => {
-        const content = editor.getData()
+    const handlePostContent = async (e: any, editor: any) => {
+        const content = await editor.getData()
         if (typingContentRef.current) {
             clearTimeout(typingContentRef.current)
         }
@@ -49,165 +74,322 @@ export default function Post() {
         }, 300)
     }
 
-    const handleSubmitThumb = () => {
-        console.log(123)
-    }
-    const [thumb, setThumb] = useState({})
-
+    const [thumb, setThumb]: [any, any] = useState({})
     const handleSubmitAddPost = async (data: any) => {
-        console.log(thumb)
-        const formData = new FormData()
-        formData.append("data", JSON.stringify(data))
-        formData.append("thumb", thumb as any)
-        const res = await axios.post("/", formData, {
-            headers: {
-                "Content-type": "multipart/form-data",
-            },
-        })
+        console.log(data)
+        try {
+            data.categoryId = selectedCategory.id
+            const formData = new FormData()
+            formData.append("data", JSON.stringify(data))
+            formData.append("thumb", thumb)
+            const res = await axios({
+                method: "POST",
+                url: `${window.dads.REACT_APP_API}/content/post`,
+                data: formData,
+                headers: { Accept: "application/json", "Content-type": "multipart/form-data" },
+            })
+            const result = await res.data
+            toastPushNotification(result.message, "success")
+            reset()
+        } catch (error) {
+            console.log(error)
+        }
     }
+    useEffect(() => {
+        console.log(thumb)
+    }, [thumb])
     return (
-        <form onSubmit={handleSubmit(handleSubmitAddPost)}>
-            <section className="space-y-4">
-                <h4 className="uppercase font-bold">Category</h4>
-                <div className="w-full inline-flex items-center">
-                    <div className="w-full">
-                        <Listbox value={selected} onChange={setSelected}>
-                            <div className="relative">
-                                <Listbox.Button className="relative w-full py-2 pl-3 pr-10 text-left bg-white dark:bg-slate-600 rounded shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-orange-300 focus-visible:ring-offset-2 focus-visible:border-indigo-500 sm:text-sm">
-                                    <span className="block truncate">{selected.name}</span>
-                                    <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                                        <SelectorIcon
-                                            className="w-5 h-5 text-gray-400"
-                                            aria-hidden="true"
-                                        />
-                                    </span>
-                                </Listbox.Button>
-                                <Transition
-                                    as={Fragment}
-                                    leave="transition ease-in duration-100"
-                                    leaveFrom="opacity-100"
-                                    leaveTo="opacity-0"
-                                >
-                                    <Listbox.Options className="absolute w-full py-1 mt-1 overflow-auto bg-white dark:bg-slate-600 rounded shadow-md max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-10">
-                                        {people.map((person, personIdx) => (
-                                            <Listbox.Option
-                                                key={personIdx}
-                                                className={({ active }) =>
-                                                    `cursor-default select-none relative py-2 pl-10 pr-4 ${
-                                                        active && "text-amber-900 bg-amber-100"
-                                                    }`
-                                                }
-                                                {...register("category", { value: person.id })}
-                                                value={person}
-                                            >
-                                                {({ selected }) => (
-                                                    <>
-                                                        <span
-                                                            className={`block truncate ${
-                                                                selected
-                                                                    ? "font-bold"
-                                                                    : "font-normal"
-                                                            }`}
-                                                        >
-                                                            {person.name}
-                                                        </span>
-                                                        {selected && (
-                                                            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                                                <CheckIcon
-                                                                    className="w-5 h-5"
-                                                                    aria-hidden="true"
-                                                                />
-                                                            </span>
-                                                        )}
-                                                    </>
-                                                )}
-                                            </Listbox.Option>
-                                        ))}
-                                    </Listbox.Options>
-                                </Transition>
-                            </div>
-                        </Listbox>
-                    </div>
-                    <div className="w-1/6 flex justify-end">
-                        <button className="btn bg-indigo-500 hover:bg-indigo-600 text-white">
-                            <svg
-                                className="w-4 h-4 fill-current opacity-50 shrink-0"
-                                viewBox="0 0 16 16"
-                            >
-                                <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z"></path>
-                            </svg>
-                            <span className="hidden xs:block ml-2">Add New</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <section className="mt-10 space-y-4">
-                <h4 className="uppercase font-bold mt-4">Post</h4>
-                <div className="space-y-4">
-                    <div className="flex items-center w-full">
-                        <div className="md:w-1/6">
-                            <label className="block text-gray-500 dark:text-gray-200 mb-3 md:mb-0 pr-4">
-                                Title
-                            </label>
-                        </div>
+        <>
+            <form onSubmit={handleSubmit(handleSubmitAddPost)}>
+                <section className="space-y-4">
+                    <h4 className="uppercase font-bold">Category</h4>
+                    <div className="w-full inline-flex items-center">
                         <div className="w-full">
-                            <input
-                                {...register("title", {
-                                    required: "Title is required",
-                                    minLength: {
-                                        value: 4,
-                                        message: "Title is at least 4 characters",
+                            <Combobox value={selectedCategory} onChange={setSelectedCategory}>
+                                <div className="relative">
+                                    <div className="relative w-full text-left rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-teal-300 focus-visible:ring-offset-2 sm:text-sm overflow-hidden">
+                                        <Combobox.Input
+                                            className="w-full bg-white dark:bg-slate-700 border-none focus:ring-0 py-2 pl-3 pr-10 text-sm leading-5"
+                                            onChange={(event) => setQuery(event.target.value)}
+                                            displayValue={(cate: any) =>
+                                                cate.title ?? "Have no category, please add new"
+                                            }
+                                        />
+                                        <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+                                            <SelectorIcon
+                                                className="w-5 h-5 text-gray-400"
+                                                aria-hidden="true"
+                                            />
+                                        </Combobox.Button>
+                                    </div>
+                                    <Transition
+                                        as={Fragment}
+                                        leave="transition ease-in duration-100"
+                                        leaveFrom="opacity-100"
+                                        leaveTo="opacity-0"
+                                        afterLeave={() => setQuery("")}
+                                    >
+                                        <Combobox.Options className="absolute w-full py-1 mt-1 overflow-auto bg-white dark:bg-slate-700 rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                            {!filteredCategory.length && query !== "" ? (
+                                                <div className="cursor-default select-none relative py-2 px-4">
+                                                    Nothing found.
+                                                </div>
+                                            ) : (
+                                                filteredCategory.map((category: any) => (
+                                                    <Combobox.Option
+                                                        key={category.id}
+                                                        className={({ active }) =>
+                                                            `cursor-default select-none relative py-2 pl-10 pr-4 ${
+                                                                active && "text-white bg-teal-600"
+                                                            }`
+                                                        }
+                                                        value={category}
+                                                    >
+                                                        {({ selected, active }) => (
+                                                            <>
+                                                                <span
+                                                                    className={`block truncate ${
+                                                                        selected
+                                                                            ? "font-medium"
+                                                                            : "font-normal"
+                                                                    }`}
+                                                                >
+                                                                    {category.title}
+                                                                </span>
+                                                                {selected ? (
+                                                                    <span
+                                                                        className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                                                            active
+                                                                                ? "text-white"
+                                                                                : "text-teal-600"
+                                                                        }`}
+                                                                    >
+                                                                        <CheckIcon
+                                                                            className="w-5 h-5"
+                                                                            aria-hidden="true"
+                                                                        />
+                                                                    </span>
+                                                                ) : null}
+                                                            </>
+                                                        )}
+                                                    </Combobox.Option>
+                                                ))
+                                            )}
+                                        </Combobox.Options>
+                                    </Transition>
+                                </div>
+                            </Combobox>
+                        </div>
+                        <div className="w-1/6 flex justify-end">
+                            <button
+                                className="btn bg-indigo-500 hover:bg-indigo-600 text-white"
+                                onClick={() => setIsOpenCategoryModal(true)}
+                            >
+                                <svg
+                                    className="w-4 h-4 fill-current opacity-50 shrink-0"
+                                    viewBox="0 0 16 16"
+                                >
+                                    <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z"></path>
+                                </svg>
+                                <span className="hidden xs:block ml-2">Add New</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="mt-10 space-y-4">
+                    <h4 className="uppercase font-bold mt-4">Post</h4>
+                    <div className="space-y-4">
+                        <div className="flex items-center w-full">
+                            <div className="md:w-1/6">
+                                <label className="block text-gray-500 dark:text-gray-200 mb-3 md:mb-0 pr-4">
+                                    Title
+                                </label>
+                            </div>
+                            <div className="w-full">
+                                <input
+                                    {...register("title", {
+                                        required: "* Title is required",
+                                        minLength: {
+                                            value: 4,
+                                            message: "* Title is at least 4 characters",
+                                        },
+                                    })}
+                                    type="text"
+                                    placeholder="Add title..."
+                                    className="bg-white dark:bg-slate-600 border-none border-gray-300 placeholder-gray-300 text-sm rounded focus:ring-slate-200 block w-full p-2.5 dark:border-gray-400"
+                                />
+                            </div>
+                        </div>
+                        {errors.title && (
+                            <p className="mt-3 text-right text-xs text-red-500 dark:text-red-300">
+                                {errors.title.message}
+                            </p>
+                        )}
+                        <div className="space-y-2">
+                            <label className="block text-gray-500 dark:text-gray-200 mb-3 md:mb-0 pr-4">
+                                Content
+                            </label>
+                            <CKEditor
+                                // className="bg-white dark:bg-black"
+                                config={{
+                                    toolbar: [
+                                        "heading",
+                                        "|",
+                                        "bold",
+                                        "italic",
+                                        "blockQuote",
+                                        "link",
+                                        "numberedList",
+                                        "bulletedList",
+                                        "imageUpload",
+                                        "insertTable",
+                                        "tableColumn",
+                                        "tableRow",
+                                        "mergeTableCells",
+                                        "mediaEmbed",
+                                        "|",
+                                        "undo",
+                                        "redo",
+                                    ],
+                                    ckfinder: {
+                                        uploadUrl: `${window.dads.REACT_APP_API}/upload-image`,
                                     },
-                                })}
-                                type="text"
-                                placeholder="Add title..."
-                                className="bg-white dark:bg-slate-600 border-none border-gray-300 placeholder-gray-300 text-sm rounded focus:ring-slate-200 block w-full p-2.5 dark:border-gray-400"
+                                }}
+                                data={getValues("content") ?? ""}
+                                editor={ClassicEditor}
+                                onReady={(editor: any) => {
+                                    // You can store the "editor" and use when it is needed.
+                                    register("content", {
+                                        required: "* Content is required",
+                                    })
+                                    editor.editing.view.change((writer: any) => {
+                                        writer.setStyle(
+                                            "height",
+                                            "450px",
+                                            editor.editing.view.document.getRoot()
+                                        )
+                                    })
+                                }}
+                                onChange={handlePostContent}
                             />
                         </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="block text-gray-500 dark:text-gray-200 mb-3 md:mb-0 pr-4">
-                            Content
-                        </label>
-                        <CKEditor
-                            className="bg-white dark:bg-black"
-                            // config={{
-                            //     ckfinder: {
-                            //         openMethod: "popup",
-                            //         uploadUrl: "https://app.gome.io",
-                            //     },
-                            // }}
-                            editor={ClassicEditor}
-                            onReady={(editor: any) => {
-                                // You can store the "editor" and use when it is needed.
-                                console.log("Editor is ready to use!", editor)
-                                editor.editing.view.change((writer: any) => {
-                                    writer.setStyle(
-                                        "height",
-                                        "450px",
-                                        editor.editing.view.document.getRoot()
-                                    )
-                                })
-                            }}
-                            onChange={handlePostContent}
-                        />
-                    </div>
-                    <div className="w-full space-y-2">
-                        <label className="block text-gray-500 dark:text-gray-200 mb-3 md:mb-0 pr-4">
-                            Thumbnail
-                        </label>
-                        <div className="flex items-center">
-                            <div className="w-60 bg-white dark:bg-slate-600">
-                                <ImageUploader setThumb={setThumb} />
+                        {errors.content && (
+                            <p className="mt-3 text-xs text-right text-red-500 dark:text-red-300">
+                                {errors.content.message}
+                            </p>
+                        )}
+                        <div className="w-full space-y-2">
+                            <label className="block text-gray-500 dark:text-gray-200 mb-3 md:mb-0 pr-4">
+                                Thumbnail
+                            </label>
+                            <div className="flex items-center">
+                                <div className="w-60 bg-white dark:bg-slate-600">
+                                    {!isSubmitting && <ImageUploader setThumb={setThumb} />}
+                                </div>
                             </div>
                         </div>
                     </div>
+                </section>
+                <div className="mt-10">
+                    <button
+                        type="submit"
+                        className={classNames(
+                            isSubmitting ? "cursor-not-allowed opacity-60" : "",
+                            "px-4 py-2 rounded bg-indigo-500 text-white"
+                        )}
+                    >
+                        <svg
+                            className={isSubmitting ? "animate-spin mr-2 h-5 w-5" : "hidden"}
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                            ></circle>
+                            <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                        </svg>
+                        SUBMIT
+                    </button>
                 </div>
-            </section>
-            <div className="mt-10">
-                <button className="px-4 py-2 rounded bg-indigo-500 text-white">SUBMIT</button>
-            </div>
-        </form>
+            </form>
+            {/* modal */}
+            <Transition appear show={isOpenCategoryModal} as={Fragment}>
+                <Dialog
+                    as="div"
+                    className="fixed inset-0 z-10 overflow-y-auto"
+                    onClose={() => setIsOpenCategoryModal(false)}
+                >
+                    <div className="min-h-screen px-4 text-center">
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0"
+                            enterTo="opacity-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <Dialog.Overlay className="fixed inset-0" />
+                        </Transition.Child>
+
+                        {/* This element is to trick the browser into centering the modal contents. */}
+                        <span className="inline-block h-screen align-middle" aria-hidden="true">
+                            &#8203;
+                        </span>
+                        <Transition.Child
+                            as={Fragment}
+                            enter="ease-out duration-300"
+                            enterFrom="opacity-0 scale-95"
+                            enterTo="opacity-100 scale-100"
+                            leave="ease-in duration-200"
+                            leaveFrom="opacity-100 scale-100"
+                            leaveTo="opacity-0 scale-95"
+                        >
+                            <form
+                                className="inline-block w-full max-w-2xl p-6 my-8 space-y-6 overflow-hidden text-left align-middle transition-all transform shadow-xl rounded-xl bg-white dark:bg-black"
+                                onSubmit={handleSubmit2(handleSubmitAddCategory)}
+                            >
+                                <Dialog.Title as="h3" className="text-lg font-medium leading-6">
+                                    Create new category
+                                </Dialog.Title>
+                                <input
+                                    {...register2("category", {
+                                        required: "Category name is required",
+                                        minLength: {
+                                            value: 4,
+                                            message: "Category name is at least 4 characters",
+                                        },
+                                    })}
+                                    type="text"
+                                    placeholder="Add category 's name..."
+                                    className="bg-white dark:bg-slate-600 border-none border-gray-300 dark:border-gray-400 placeholder-gray-300 text-sm rounded block w-full p-2.5"
+                                />
+                                <button
+                                    type="submit"
+                                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500"
+                                >
+                                    Add
+                                </button>
+                            </form>
+                        </Transition.Child>
+                    </div>
+                </Dialog>
+            </Transition>
+        </>
     )
+}
+
+function classNames(...classes: string[]) {
+    return classes.filter(Boolean).join(" ")
 }

@@ -20,12 +20,10 @@ export default function SignIn() {
     const submitLogin = async (data: any) => {
         try {
             await signIn(data)
-            navigate("/")
         } catch (e) {
             console.log(e)
         }
     }
-
     if (authState.isAuth) return <Navigate to={state ? state.previousPage : "/"} replace={true} />
     return authState.isLoading ? (
         <Loading />

@@ -4,7 +4,7 @@ import { NavLink, useLocation } from "react-router-dom"
 import SidebarLinkGroup from "./SidebarLinkGroup"
 
 interface ISidebar {
-    sidebarOpen: boolean;
+    sidebarOpen: boolean
     setSidebarOpen: any
 }
 
@@ -24,7 +24,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: ISidebar) {
     useEffect(() => {
         const clickHandler = ({ target }: any) => {
             if (!sidebar.current || !trigger.current) return
-            if (!sidebarOpen || sidebar.current.contains(target) || trigger.current.contains(target)) return
+            if (
+                !sidebarOpen ||
+                sidebar.current.contains(target) ||
+                trigger.current.contains(target)
+            )
+                return
             setSidebarOpen(false)
         }
         document.addEventListener("click", clickHandler)
@@ -54,7 +59,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: ISidebar) {
         <>
             {/* Sidebar backdrop (mobile only) */}
             <div
-                className={`fixed inset-0 bg-slate-900 bg-opacity-30 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${
+                className={`fixed inset-0 bg-slate-900 bg-opacity-30 lg:hidden lg:z-auto transition-opacity duration-200 ${
                     sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
                 }`}
                 aria-hidden="true"
@@ -64,7 +69,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: ISidebar) {
             <div
                 id="sidebar"
                 ref={sidebar}
-                className={`bg-slate-600 dark:bg-slate-800 flex flex-col absolute z-40 left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 transform h-screen overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 p-4 transition-all duration-200 ease-in-out ${
+                className={`bg-slate-600 dark:bg-slate-800 flex flex-col absolute left-0 top-0 lg:static lg:left-auto lg:top-auto lg:translate-x-0 transform h-screen overflow-y-scroll lg:overflow-y-auto no-scrollbar w-64 lg:w-20 lg:sidebar-expanded:!w-64 2xl:!w-64 shrink-0 p-4 transition-all duration-200 ease-in-out ${
                     sidebarOpen ? "translate-x-0" : "-translate-x-64"
                 }`}
             >
@@ -157,7 +162,8 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: ISidebar) {
                                             <a
                                                 href="#0"
                                                 className={`block text-slate-200 hover:text-white truncate transition duration-150 ${
-                                                    pathname.includes("/content/") && "hover:text-slate-200"
+                                                    pathname.includes("/content/") &&
+                                                    "hover:text-slate-200"
                                                 }`}
                                                 onClick={(e) => {
                                                     e.preventDefault()
@@ -174,19 +180,25 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: ISidebar) {
                                                         >
                                                             <path
                                                                 className={`fill-current text-slate-400 ${
-                                                                    pathname.includes("/content/") && "text-indigo-300"
+                                                                    pathname.includes(
+                                                                        "/content/"
+                                                                    ) && "text-indigo-300"
                                                                 }`}
                                                                 d="M13 15l11-7L11.504.136a1 1 0 00-1.019.007L0 7l13 8z"
                                                             />
                                                             <path
                                                                 className={`fill-current text-slate-700 ${
-                                                                    pathname.includes("/content/") && "text-indigo-600"
+                                                                    pathname.includes(
+                                                                        "/content/"
+                                                                    ) && "text-indigo-600"
                                                                 }`}
                                                                 d="M13 15L0 7v9c0 .355.189.685.496.864L13 24v-9z"
                                                             />
                                                             <path
                                                                 className={`fill-current text-slate-600 ${
-                                                                    pathname.includes("/content/") && "text-indigo-500"
+                                                                    pathname.includes(
+                                                                        "/content/"
+                                                                    ) && "text-indigo-500"
                                                                 }`}
                                                                 d="M13 15.047V24l10.573-7.181A.999.999 0 0024 16V8l-11 7.047z"
                                                             />
@@ -214,7 +226,14 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: ISidebar) {
                                                         <NavLink
                                                             end
                                                             to="/content/overview"
-                                                            className={({ isActive }) => classNames(isActive ? 'text-green-200' : '', 'block text-slate-400 hover:text-slate-200 transition duration-150 truncate')}
+                                                            className={({ isActive }) =>
+                                                                classNames(
+                                                                    isActive
+                                                                        ? "text-green-200"
+                                                                        : "",
+                                                                    "block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+                                                                )
+                                                            }
                                                         >
                                                             <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                                 Overview
@@ -225,7 +244,14 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: ISidebar) {
                                                         <NavLink
                                                             end
                                                             to="/content/add"
-                                                            className={({ isActive }) => classNames(isActive ? 'text-green-200' : '', 'block text-slate-400 hover:text-slate-200 transition duration-150 truncate')}
+                                                            className={({ isActive }) =>
+                                                                classNames(
+                                                                    isActive
+                                                                        ? "text-green-200"
+                                                                        : "",
+                                                                    "block text-slate-400 hover:text-slate-200 transition duration-150 truncate"
+                                                                )
+                                                            }
                                                         >
                                                             <span className="text-sm font-medium lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
                                                                 Add
@@ -580,7 +606,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }: ISidebar) {
     )
 }
 function classNames(...classes: any[]) {
-    return classes.filter(Boolean).join(' ')
+    return classes.filter(Boolean).join(" ")
 }
 
 export default Sidebar
