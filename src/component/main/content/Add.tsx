@@ -2,7 +2,7 @@ import { Fragment, useState, useRef, useEffect } from "react"
 import { Combobox, Dialog, Transition } from "@headlessui/react"
 import { CheckIcon, SelectorIcon } from "@heroicons/react/solid"
 import { CKEditor } from "@ckeditor/ckeditor5-react"
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
+import ClassicEditor from "ckeditor5-build-classic-dna"
 
 import { useForm } from "react-hook-form"
 import ImageUploader from "../../../modules/ImageUploader"
@@ -76,7 +76,6 @@ export default function Post() {
 
     const [thumb, setThumb]: [any, any] = useState({})
     const handleSubmitAddPost = async (data: any) => {
-        console.log(data)
         try {
             data.categoryId = selectedCategory.id
             const formData = new FormData()
@@ -95,9 +94,6 @@ export default function Post() {
             console.log(error)
         }
     }
-    useEffect(() => {
-        console.log(thumb)
-    }, [thumb])
     return (
         <>
             <form onSubmit={handleSubmit(handleSubmitAddPost)}>
@@ -107,7 +103,7 @@ export default function Post() {
                         <div className="w-full">
                             <Combobox value={selectedCategory} onChange={setSelectedCategory}>
                                 <div className="relative">
-                                    <div className="relative w-full text-left rounded-lg shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-teal-300 focus-visible:ring-offset-2 sm:text-sm overflow-hidden">
+                                    <div className="relative w-full text-left rounded shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-teal-300 focus-visible:ring-offset-2 sm:text-sm overflow-hidden">
                                         <Combobox.Input
                                             className="w-full bg-white dark:bg-slate-700 border-none focus:ring-0 py-2 pl-3 pr-10 text-sm leading-5"
                                             onChange={(event) => setQuery(event.target.value)}
@@ -232,32 +228,21 @@ export default function Post() {
                             </label>
                             <CKEditor
                                 // className="bg-white dark:bg-black"
+                                editor={ClassicEditor}
                                 config={{
-                                    toolbar: [
-                                        "heading",
-                                        "|",
-                                        "bold",
-                                        "italic",
-                                        "blockQuote",
-                                        "link",
-                                        "numberedList",
-                                        "bulletedList",
-                                        "imageUpload",
-                                        "insertTable",
-                                        "tableColumn",
-                                        "tableRow",
-                                        "mergeTableCells",
-                                        "mediaEmbed",
-                                        "|",
-                                        "undo",
-                                        "redo",
-                                    ],
-                                    ckfinder: {
-                                        uploadUrl: `${window.dads.REACT_APP_API}/upload-image`,
+                                    image: {
+                                        toolbar: [
+                                            "imageStyle:inline",
+                                            "imageStyle:block",
+                                            "imageStyle:side",
+                                            "|",
+                                            "toggleImageCaption",
+                                            "imageTextAlternative",
+                                        ],
                                     },
                                 }}
                                 data={getValues("content") ?? ""}
-                                editor={ClassicEditor}
+                                // editor={ClassicEditor}
                                 onReady={(editor: any) => {
                                     // You can store the "editor" and use when it is needed.
                                     register("content", {
@@ -265,11 +250,11 @@ export default function Post() {
                                     })
                                     editor.editing.view.change((writer: any) => {
                                         writer.setStyle(
-                                            "height",
-                                            "450px",
+                                            { height: "800px", "font-size": "12px" },
                                             editor.editing.view.document.getRoot()
                                         )
                                     })
+                                    editor.ui.view.element.classList.add("dark:bg-black")
                                 }}
                                 onChange={handlePostContent}
                             />
