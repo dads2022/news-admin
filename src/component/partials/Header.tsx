@@ -3,7 +3,7 @@ import SearchModal from "./header/SearchModal"
 import Notifications from "./header/Notifications"
 import Help from "./header/Help"
 import UserMenu from "./header/UserMenu"
-// import Wallet from "./header/Wallet"
+import Wallet from "./header/Wallet"
 import DarkModeButton from "../../modules/DarkModeButton"
 
 type THeader = {

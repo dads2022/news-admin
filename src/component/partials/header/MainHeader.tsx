@@ -3,11 +3,7 @@ import FilterButton from "../actions/FilterButton"
 import Datepicker from "../actions/Datepicker"
 
 export default function MainHeader() {
-    const path = window.location.pathname
     const [title, setTitle] = useState("")
-    useEffect(() => {
-        console.log(1111)
-    }, [path])
     return (
         <>
             {/* Left: Avatars */}

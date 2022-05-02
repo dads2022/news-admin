@@ -14,7 +14,3 @@ export const toastPushNotification = (message: string, type: any, theme = localS
     }
     return toast(message, options)
 }
-
-// export const getRefreshToken = async () => {
-
-// }

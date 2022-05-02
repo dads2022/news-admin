@@ -64,6 +64,7 @@ export default function Overview() {
                 isOpen: false,
             }))
             toastPushNotification(result.message, "success")
+            getPostList()
         } catch (error) {}
     }
     return (
@@ -73,25 +74,42 @@ export default function Overview() {
                 <div className="col-span-full xl:col-span-8 bg-white dark:bg-slate-800 shadow rounded">
                     <div className="p-2">
                         <div className="overflow-x-auto">
-                            <table className="table-auto w-full divide-y">
-                                <thead className="text-xs text-fuchsia-900 dark:text-fuchsia-300 uppercase">
-                                    <tr>
-                                        <th className="p-2 font-semibold text-left">ID</th>
-                                        <th className="p-2 font-semibold text-center">Thumbnail</th>
-                                        <th className="p-2 font-semibold text-left">Title</th>
-                                        <th className="p-2 font-semibold text-left">Category</th>
-                                        <th className="p-2 font-semibold text-left">Author</th>
-                                        <th className="p-2 font-semibold text-center">Status</th>
-                                        <th className="p-2 font-semibold text-right">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="text-sm font-medium divide-y divide-slate-100 dark:divide-slate-700">
-                                    {!postList.length ? (
+                            {!postList || !postList.length ? (
+                                <div className="flex flex-col items-center space-y-5 py-2">
+                                    <p className="">Have no any posts...</p>
+                                    <button
+                                        className="btn text-green-500"
+                                    >
+                                        <svg
+                                            className="w-4 h-4 fill-current opacity-50 shrink-0"
+                                            viewBox="0 0 16 16"
+                                        >
+                                            <path d="M15 7H9V1c0-.6-.4-1-1-1S7 .4 7 1v6H1c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1V9h6c.6 0 1-.4 1-1s-.4-1-1-1z"></path>
+                                        </svg>
+                                        <span className="hidden xs:block ml-2">Add New</span>
+                                    </button>
+                                </div>
+                            ) : (
+                                <table className="table-auto w-full divide-y">
+                                    <thead className="text-xs text-fuchsia-900 dark:text-fuchsia-300 uppercase">
                                         <tr>
-                                            <td>Nothing...</td>
+                                            <th className="p-2 font-semibold text-left">ID</th>
+                                            <th className="p-2 font-semibold text-center">
+                                                Thumbnail
+                                            </th>
+                                            <th className="p-2 font-semibold text-left">Title</th>
+                                            <th className="p-2 font-semibold text-left">
+                                                Category
+                                            </th>
+                                            <th className="p-2 font-semibold text-left">Author</th>
+                                            <th className="p-2 font-semibold text-center">
+                                                Status
+                                            </th>
+                                            <th className="p-2 font-semibold text-right">Action</th>
                                         </tr>
-                                    ) : (
-                                        postList.map((item: any) => (
+                                    </thead>
+                                    <tbody className="text-sm font-medium divide-y divide-slate-100 dark:divide-slate-700">
+                                        {postList.map((item: any) => (
                                             <tr key={item.id}>
                                                 <td className="p-2">{item.id}</td>
                                                 <td className="p-2 flex justify-center">
@@ -184,7 +202,9 @@ export default function Overview() {
                                                             className="bg-green-500 text-white hover:bg-green-600 hover:text-white font-bold text-xs px-4 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
                                                             type="button"
                                                         >
-                                                            <Link to={`/content/update/${item.id}`}>UPDATE</Link>
+                                                            <Link to={`/content/update/${item.id}`}>
+                                                                UPDATE
+                                                            </Link>
                                                         </button>
                                                         <button
                                                             onClick={() =>
@@ -202,10 +222,10 @@ export default function Overview() {
                                                     </div>
                                                 </td>
                                             </tr>
-                                        ))
-                                    )}
-                                </tbody>
-                            </table>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            )}
                         </div>
                     </div>
                 </div>

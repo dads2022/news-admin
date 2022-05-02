@@ -57,6 +57,7 @@ export default function Post() {
     const {
         register,
         reset,
+        resetField,
         handleSubmit,
         setValue,
         getValues,
@@ -90,8 +91,9 @@ export default function Post() {
             const result = await res.data
             toastPushNotification(result.message, "success")
             reset()
-        } catch (error) {
-            console.log(error)
+        } catch (error: any) {
+            error.response.status === 500 && toastPushNotification("File is over 1mb, please upload lower size", "warning")
+            resetField("content")
         }
     }
     return (
