@@ -77,9 +77,7 @@ export default function Overview() {
                             {!postList || !postList.length ? (
                                 <div className="flex flex-col items-center space-y-5 py-2">
                                     <p className="">Have no any posts...</p>
-                                    <button
-                                        className="btn text-green-500"
-                                    >
+                                    <button className="btn text-green-500">
                                         <svg
                                             className="w-4 h-4 fill-current opacity-50 shrink-0"
                                             viewBox="0 0 16 16"
@@ -112,11 +110,12 @@ export default function Overview() {
                                         {postList.map((item: any) => (
                                             <tr key={item.id}>
                                                 <td className="p-2">{item.id}</td>
-                                                <td className="p-2 flex justify-center">
+                                                <td className="p-2">
                                                     <img
+                                                        className="mx-auto"
                                                         src={item.thumbnail}
                                                         alt={`thumbnail of ${item.id}`}
-                                                        width="50"
+                                                        width="100"
                                                         height="auto"
                                                     />
                                                 </td>
@@ -198,14 +197,16 @@ export default function Overview() {
                                                         >
                                                             VIEW
                                                         </button>
-                                                        <button
-                                                            className="bg-green-500 text-white hover:bg-green-600 hover:text-white font-bold text-xs px-4 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
-                                                            type="button"
-                                                        >
-                                                            <Link to={`/content/update/${item.id}`}>
+
+                                                        <Link to={`/content/update/${item.id}`}>
+                                                            <button
+                                                                className="bg-green-500 text-white hover:bg-green-600 hover:text-white font-bold text-xs px-4 py-2 rounded outline-none focus:outline-none ease-linear transition-all duration-150"
+                                                                type="button"
+                                                            >
                                                                 UPDATE
-                                                            </Link>
-                                                        </button>
+                                                            </button>
+                                                        </Link>
+
                                                         <button
                                                             onClick={() =>
                                                                 setDeleteModal((state: any) => ({

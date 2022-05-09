@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 
-function ToggleDarkMode() {
+export function ToggleDarkMode() {
     const currentTheme: string | null = localStorage.getItem("theme")
     const [theme, setTheme] = useState<string>(currentTheme as string)
     const colorTheme = theme === "dark" ? "light" : "dark"
@@ -15,11 +15,9 @@ function ToggleDarkMode() {
     return [colorTheme, setTheme] as const
 }
 
-
 export default function DarkModeButton() {
     const [colorTheme, setTheme] = ToggleDarkMode()
     const [enabled, setEnabled] = useState<boolean>(colorTheme === "dark" ? false : true)
-
     return (
         <div
             onClick={() => {

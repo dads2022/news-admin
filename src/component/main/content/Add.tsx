@@ -9,7 +9,7 @@ import ImageUploader from "../../../modules/ImageUploader"
 import axios from "axios"
 import { toastPushNotification } from "../../../utils/Helper"
 
-export default function Post() {
+export default function AddPost() {
     const [categoriesList, setCategoriesList]: [any, any] = useState([])
     const [selectedCategory, setSelectedCategory]: [any, any] = useState({})
     const [query, setQuery] = useState("")
@@ -78,6 +78,10 @@ export default function Post() {
     const [thumb, setThumb]: [any, any] = useState({})
     const handleSubmitAddPost = async (data: any) => {
         try {
+            if (!Object.keys(thumb).length) {
+                toastPushNotification("Please upload thumbnail!", "error")
+                return
+            }
             data.categoryId = selectedCategory.id
             const formData = new FormData()
             formData.append("data", JSON.stringify(data))
@@ -92,7 +96,8 @@ export default function Post() {
             toastPushNotification(result.message, "success")
             reset()
         } catch (error: any) {
-            error.response.status === 500 && toastPushNotification("File is over 1mb, please upload lower size", "warning")
+            error.response.status === 500 &&
+                toastPushNotification("File is over 1mb, please upload lower size", "warning")
             resetField("content")
         }
     }
@@ -108,7 +113,7 @@ export default function Post() {
                                     <div className="relative w-full text-left rounded shadow-md cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-white focus-visible:ring-offset-teal-300 focus-visible:ring-offset-2 sm:text-sm overflow-hidden">
                                         <Combobox.Input
                                             className="w-full bg-white dark:bg-slate-700 border-none focus:ring-0 py-2 pl-3 pr-10 text-sm leading-5"
-                                            onChange={(event) => setQuery(event.target.value)}
+                                            onChange={(e) => setQuery(e.target.value)}
                                             displayValue={(cate: any) =>
                                                 cate.title ?? "Have no category, please add new"
                                             }
@@ -137,37 +142,42 @@ export default function Post() {
                                                     <Combobox.Option
                                                         key={category.id}
                                                         className={({ active }) =>
-                                                            `cursor-default select-none relative py-2 pl-10 pr-4 ${
-                                                                active && "text-white bg-teal-600"
-                                                            }`
+                                                            classNames(
+                                                                "cursor-default select-none relative py-2 pl-10 pr-4",
+                                                                active
+                                                                    ? "text-white bg-teal-600"
+                                                                    : ""
+                                                            )
                                                         }
                                                         value={category}
                                                     >
                                                         {({ selected, active }) => (
                                                             <>
                                                                 <span
-                                                                    className={`block truncate ${
+                                                                    className={classNames(
+                                                                        "block truncate",
                                                                         selected
                                                                             ? "font-medium"
                                                                             : "font-normal"
-                                                                    }`}
+                                                                    )}
                                                                 >
                                                                     {category.title}
                                                                 </span>
-                                                                {selected ? (
+                                                                {selected && (
                                                                     <span
-                                                                        className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                                                        className={classNames(
+                                                                            "absolute inset-y-0 left-0 flex items-center pl-3",
                                                                             active
                                                                                 ? "text-white"
                                                                                 : "text-teal-600"
-                                                                        }`}
+                                                                        )}
                                                                     >
                                                                         <CheckIcon
                                                                             className="w-5 h-5"
                                                                             aria-hidden="true"
                                                                         />
                                                                     </span>
-                                                                ) : null}
+                                                                )}
                                                             </>
                                                         )}
                                                     </Combobox.Option>
@@ -229,7 +239,6 @@ export default function Post() {
                                 Content
                             </label>
                             <CKEditor
-                                // className="bg-white dark:bg-black"
                                 editor={ClassicEditor}
                                 config={{
                                     image: {
@@ -252,11 +261,15 @@ export default function Post() {
                                     })
                                     editor.editing.view.change((writer: any) => {
                                         writer.setStyle(
-                                            { height: "800px", "font-size": "12px" },
+                                            {
+                                                height: "800px",
+                                                "font-size": "13px",
+                                                color: "black",
+                                            },
                                             editor.editing.view.document.getRoot()
                                         )
                                     })
-                                    editor.ui.view.element.classList.add("dark:bg-black")
+                                    // editor.ui.view.element.classList.add("dark:bg-black")
                                 }}
                                 onChange={handlePostContent}
                             />

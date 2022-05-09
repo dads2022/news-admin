@@ -98,8 +98,8 @@ export default function Wallet() {
                     </svg>
                 </CopyToClipboard>
             </div>
-            {/*<p className="inline-flex items-center">{parseInt(tokenInfo.balance)} - {tokenInfo.balance}</p>
-            <p className="inline-flex items-center">{tokenInfo.symbol}</p>*/}
+            {/* <p className="inline-flex items-center">{parseInt(tokenInfo.balance)} - {tokenInfo.balance}</p>
+            <p className="inline-flex items-center">{tokenInfo.symbol}</p> */}
             {copyAddressStatus && (
                 <p className="inline-flex items-center px-4 py-2 font-semibold text-sm text-green-600">
                     {copyAddressStatus}
